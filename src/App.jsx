@@ -1,16 +1,17 @@
 import './App.css'
 
 import { Component } from 'react'
+import Navbar from './components/Navbar'
+import News from './components/News'
 
 export default class App extends Component {
 
-  c = 'John';
-
   render() {
     return (
-      <div>
-        Hello {this.c}
-      </div>
+      <>
+        <Navbar/>
+        <News />
+      </>
     )
   }
 }
