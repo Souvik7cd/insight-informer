@@ -1,44 +1,33 @@
-//import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 import { Component } from "react";
+import { Link } from "react-router-dom";
+import { capitalize } from "../util/stringUtil";
 
 export class Navbar extends Component {
-  //static propTypes = {}
+  static propTypes = {
+    categories: PropTypes.array,
+  };
 
-  categories = [
-    "Headlines",
-    "Business",
-    "Entertainment",
-    "General",
-    "Health",
-    "Science",
-    "Sports",
-    "Technology",
-  ];
+  setTheme(theme) {
+    document.body.setAttribute('data-bs-theme', theme);
+  }
 
   render() {
     return (
-      <div>
+      <div style={{ fontFamily: "'Georgia', serif" }}>
         <div className="text-center my-4 d-none d-sm-block">
-          <a
+          <Link
             className="fw-bold h1 link-underline link-underline-opacity-0"
-            href="/"
-            style={{ fontFamily: "'Georgia', serif" }}
+            to="/"
           >
             Insight Informer
-          </a>
+          </Link>
         </div>
-        <nav
-          className="navbar navbar-expand-md border-top border-bottom border-dark"
-          style={{ fontFamily: "'Georgia', serif" }}
-        >
+        <nav className="navbar navbar-expand-md border-top border-bottom border-dark">
           <div className="container">
-            <a
-              className="navbar-brand fw-bold d-md-none"
-              href="/"
-              style={{ fontFamily: "'Georgia', serif" }}
-            >
+            <Link className="navbar-brand fw-bold d-md-none" to="/">
               Insight Informer
-            </a>
+            </Link>
             <button
               className="navbar-toggler"
               type="button"
@@ -55,21 +44,27 @@ export class Navbar extends Component {
               id="navbarSupportedContent"
             >
               <ul className="navbar-nav me-auto mb-2 mb-md-0 d-flex justify-content-center w-100">
-                {this.categories.map((category, index) => {
+                <li className="nav-item">
+                  <Link
+                    className="nav-link py-0"
+                    aria-current="headlines"
+                    to="/"
+                  >
+                    Headlines
+                  </Link>
+                </li>
+                {this.props.categories.map((category, index) => {
                   return (
                     <li className="nav-item" key={index}>
-                      <a
-                        className="nav-link py-0"
-                        aria-current={category}
-                        href="/"
-                      >
-                        {category}
-                      </a>
+                      <Link className="nav-link py-0" to={category}>
+                        {capitalize(category)}
+                      </Link>
                     </li>
                   );
                 })}
               </ul>
-              <div className="nav-item dropdown">
+
+              <div className="nav-item dropdown" aria-label="theme-selection">
                 <a
                   className="nav-link dropdown-toggle d-flex align-items-center"
                   href="#"
@@ -79,18 +74,32 @@ export class Navbar extends Component {
                 >
                   <i className="material-symbols-outlined">contrast</i>
                 </a>
-                <ul className="dropdown-menu dropdown-menu-end show">
+                <ul className="dropdown-menu shadow dropdown-menu-end">
                   <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#">
-                      <i className="material-symbols-outlined">brightness_7</i>
-                      <span className="ms-2">Light</span>
-                    </a>
+                    <button
+                      type="button"
+                      className="dropdown-item d-flex align-items-center justify-content-between"
+                      onClick={this.setTheme("dark")}
+                    >
+                      <span className="d-flex align-items-center">
+                        <i className="material-symbols-outlined">dark_mode</i>
+                        <span className="ms-2">Dark</span>
+                      </span>
+                      <i className="material-symbols-outlined" style={{scale: "0.75"}}>check</i>
+                    </button>
                   </li>
                   <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#">
-                      <i className="material-symbols-outlined">dark_mode</i>
-                      <span className="ms-2">Dark</span>
-                    </a>
+                    <button
+                      type="button"
+                      className="dropdown-item d-flex align-items-center justify-content-between"
+                      onClick={this.setTheme("light")}
+                    >
+                      <span className="d-flex align-items-center">
+                        <i className="material-symbols-outlined">light_mode</i>
+                        <span className="ms-2">Light</span>
+                      </span>
+                      <i className="material-symbols-outlined" style={{scale: "0.75"}}>check</i>
+                    </button>
                   </li>
                 </ul>
               </div>

@@ -1,15 +1,18 @@
 import PropTypes from "prop-types";
 import { Component } from "react";
 import NewsItem from "./NewsItem";
+import { titleCase } from "../util/stringUtil";
 
 export class News extends Component {
   static defaultProps = {
+    heading: 'Top Headlines',
     country: 'in',
     pageSize: 9,
     category: ''
   }
 
   static propTypes = {
+    heading: PropTypes.string,
     pageSize: PropTypes.number,
     country: PropTypes.string,
     category: PropTypes.string
@@ -43,6 +46,11 @@ export class News extends Component {
       totalResults: this.parsedData.totalResults,
       loading: false,
     });
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
   };
 
   componentDidMount = async () => {
@@ -51,13 +59,21 @@ export class News extends Component {
   };
 
   handlePrevClick = async () => {    
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
     const pageNum = this.state.page > 1 && this.state.page - 1;
     this.fetchData(pageNum);
   };
 
   handleNextClick = async () => {
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
     const pageNum = this.state.page + 1;
     if (!(pageNum > Math.ceil(this.state.totalResults / this.props.pageSize))) {
       this.fetchData(pageNum);
@@ -67,27 +83,10 @@ export class News extends Component {
   render() {
     return (
       <div className="container my-3">
-        <h3
-          className="mb-3 text-center"
-          style={{ fontFamily: "'Georgia', serif" }}
-        >
-          Top Headlines
+        <h3 className="my-4 text-center" style={{ fontFamily: "'Georgia', serif" }}>
+          {titleCase(this.props.heading)}
         </h3>
         <div className="row">
-          {this.state.loading && (
-            <div className="container my-2 d-flex justify-content-between">
-              <a
-                className="btn btn-dark disabled placeholder col-4"
-                aria-disabled="true"
-                style={{ width: "120px" }}
-              ></a>
-              <a
-                className="btn btn-dark disabled placeholder col-4"
-                aria-disabled="true"
-                style={{ width: "120px" }}
-              ></a>
-            </div>
-          )}
           {this.state.loading &&
             this.state.articles.map((_, index) => {
               return (
@@ -115,40 +114,20 @@ export class News extends Component {
 
         {!this.state.loading && (
           <div className="row">
-            <div className="container my-2 d-flex justify-content-between">
-              <button
-                disabled={this.state.page === 1}
-                className="btn btn-dark"
-                style={{ width: "120px" }}
-                onClick={this.handlePrevClick}
-              >
-                &lt; Previous
-              </button>
-              <button
-                disabled={
-                  this.state.page + 1 >
-                  Math.ceil(this.state.totalResults / this.props.pageSize)
-                }
-                className="btn btn-dark"
-                style={{ width: "120px" }}
-                onClick={this.handleNextClick}
-              >
-                Next &gt;
-              </button>
-            </div>
-
             {this.state.articles.map((article) => {
               const { title, description, url, urlToImage } = article;
-              return (
-                <div key={url} className="col-lg-4 col-md-6 my-2">
-                  <NewsItem
-                    title={title}
-                    description={description?.slice(0, 88) + "..."}
-                    urlToImage={urlToImage}
-                    url={url}
-                  />
-                </div>
-              );
+              if(title !== "[Removed]") {
+                return (
+                  <div key={url} className="col-lg-4 col-md-6 my-2">
+                    <NewsItem
+                      title={title}
+                      description={description}
+                      urlToImage={urlToImage}
+                      url={url}
+                    />
+                  </div>
+                );
+              }
             })}
             <div className="container mt-2 mb-5 d-flex justify-content-between">
               <button
